@@ -165,7 +165,7 @@ class CssSearch
 
 
 
-
+  # ToDo: Use Logger from Ruby
   def logger (params)
     # print message just if debug is enabled
     return if !@debug
