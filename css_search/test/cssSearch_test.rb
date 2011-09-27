@@ -14,7 +14,7 @@ class TestCssSearch < Test::Unit::TestCase
   # create and prepare the CssParser object
   def setup
     @params = Hash.new
-    @params["debug"] = true
+    @params["debug"] = false
     @cssSearchObj = CssSearch.new(@params)
   end
 
@@ -30,7 +30,7 @@ class TestCssSearch < Test::Unit::TestCase
     results[2] = "p.element-with-property"
     results[3] = "span"
 
-    assert_equal results, @cssSearchObj.getSelectors(@params), "getSelectors for border-radius test!"
+    assert_equal results, @cssSearchObj.getSelectors(@params), "getSelectors for border-radius!"
   end
 
   def test_isValidFile
@@ -38,11 +38,11 @@ class TestCssSearch < Test::Unit::TestCase
     assert_equal true, @cssSearchObj.isValidFile(@params)
   end
 
-  def test_getSelectorsInFolder
+  def test_getAllSelectorsInDirectory
     @params["cssPropertyMask"] = 'border-radius'
-    @params["path"] = './resources/'
-  
-    results = Array.new()
+    @params["directory"] = './resources/'
+
+    results = Array.new
     results[0] = "#id-with-property"
     results[1] = ".class-with-property"
     results[2] = "p.element-with-property"
@@ -51,8 +51,8 @@ class TestCssSearch < Test::Unit::TestCase
     results[5] = ".class-with-property.example2"
     results[6] = "p.element-with-property.example2"
     results[7] = "span.example2"
-  
-    assert_equal results, @cssSearchObj.getAllSelectorsInFolder(@params), "getSelectors all selectors in folder for border-radius test!"
+
+    assert_equal results, @cssSearchObj.getAllSelectorsInDirectory(@params), "getSelectors all selectors with border-radius in all files in given directory!"
   end
-  
+
 end
