@@ -1,0 +1,10 @@
+# This software by Daniel Zamorano is licensed under a 
+# Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License.
+# Read the license here: http://creativecommons.org/licenses/by-nc-sa/3.0/
+
+#
+cssSearch
+#
+Returns all css selectors using a css property, looks in a file or in a directory with several css files
+
+= Pending Documentation =
