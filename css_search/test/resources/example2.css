@@ -1,0 +1,42 @@
+/* css example for CssSearch class */
+
+#id-with-property.example2 {
+	border-radius: 5px 0;
+	moz-border-radius: 5px 0;
+}
+
+#id-without-property.example2 {
+	margin-top: 5px;
+	border-top-color: #fff;
+}
+
+.class-with-property.example2 {
+	border-radius: 5px 0;
+	moz-border-radius: 5px 0;
+}
+
+.class-without-property.example2 {
+	margin-top: 5px;
+	border-top-color: #fff;
+}
+
+p.element-with-property.example2 {
+	border-radius: 5px 5px 5px 5px;
+	webkit-border-radius: 5px 0;
+}
+
+p.element-without-property.example2 {
+	margin-top: 5px;
+	border-top-color: #fff;
+}
+
+/*with property*/
+span.example2 {
+	border-radius: 5px 5px 5px 5px;
+	webkit-border-radius: 5px 0;	
+}
+
+/*without property*/
+div.example2 {
+	padding-top: 5px;
+}

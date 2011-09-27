@@ -12,40 +12,31 @@ require 'css_parser'
 class CssSearch
 
   def initialize( params )
-    @debug = params['debug'] || false    
-    #look for needed parameters or exit
-    if !params['cssFile']
-      logger ({"type" => 'error', "function" => 'initialize', "message" => 'Needed cssFile parameter'})
-      exit
-    end
-    
-    @params = params || return
+    @debug = params['debug'] || false
     @parserObj = CssParser::Parser.new
-    @parserObj.load_file!(@params['cssFile'])
-
-      @params.each_pair do |key,value|
-        logger ({"type"     => 'info', 
-                "function" => 'initialize', 
-                "message"  => "params: Key = #{key}, Value = #{value}"})
-      end
-
   end
 
   def getSelectors (params)
     
     functionName = 'getSelectors'
     
-    #look for needed parameters or exit
-    if !params['cssPropertyMask']
-      logger ({"type"     => 'error',
-              "function" => "#{functionName}",
-              "message"  => "Needed cssPropertyMask parameter"})
-      exit
+    #look for needed parameters or return
+    for parameter in ['cssPropertyMask', 'cssFile']
+      if !params["#{parameter}"]
+        logger ({"type"     => 'error',
+                "function" => "#{functionName}",
+                "message"  => "Needed #{parameter} parameter"})
+        return false
+      end
     end
     
-    cssPropertyMask = ( params['cssPropertyMask'] || @params["cssPropertyMask"] ) || '*'
+    cssPropertyMask = ( params['cssPropertyMask'] ) || '*'
     cssSelectors = Hash.new
-    
+  
+    if isValidFile({"file" => params['cssFile']})
+      @parserObj.load_file!(params['cssFile'])   
+    end
+  
     logger ({"type"     => 'info',
             "function" => "#{functionName}", 
             "message"  => "cssPropertyMask: #{cssPropertyMask}"})
@@ -55,59 +46,87 @@ class CssSearch
         if  declarations =~ /#{cssPropertyMask}/ 
           #just set the selector as key and 1 to avoid duplicate elements if we use a hash
           cssSelectors["#{selector}"] = 1
-
+  
           logger ({"type"     => 'info',
                   "function" => "#{functionName}", 
                   "message"  => "true! #{selector} -> #{cssSelectors["#{selector}"]}"})
         end
     end
-
+  
     # get selector into array
     resultingSelectors = Array.new(cssSelectors.keys)
-
+  
     logger ({"type"     => 'info',
             "function" => "#{functionName}", 
             "message"  => "Resulting Selectors:"})
-
+  
     resultingSelectors.each do | selector |
       logger ({"type" => 'info', "function" => "#{functionName}", "message"  => "#{selector}"})     
     end
-
+  
     return resultingSelectors
+  
+  end #getSelectors
 
-  end 
-  
-  
   # ---
   # private functions
   # ---
   
-  private 
+  # private 
   
+  def isValidFile (params)
+  
+    #look for needed parameters or return
+    for parameter in ['file']
+      if !params["#{parameter}"]
+        logger ({"type"     => 'error', 
+                "function" => 'isValidFile', 
+                "message"  => "needed #{parameter} parameter!"})
+        return false
+      end
+    end
+
+    if !File.exists?("#{params["file"]}")
+      logger ({"type"     => 'error', 
+              "function" => 'getProperFile', 
+              "message"  => "file doesn't exists: #{params["file"]}"})      
+      return false
+    end
+
+    if ! /\.css\Z/ =~ "#{params["file"]}"
+      logger ({"type"     => 'info', 
+              "function" => 'isValidFile', 
+              "message"  => "this is not a valid css file"})
+      return false
+    end
+    
+    return true
+  end # isValidFile
+
   def logger (params)
     # print message just if debug is enabled
-    exit if !@debug
+    return if !@debug
     
     prefix = Hash.new
     prefix['error']   = 'ERROR!!'
     prefix['warning'] = 'WARNING'
     prefix['info']    = 'INFO'    
 
-    #look for needed parameters or exit    
-    for parameter in ['message','type','function'].each
+    #look for needed parameters or return
+    for parameter in ['message','type','function']
       if !params["#{parameter}"]
           puts "#{prefix['error']} - logger: needed #{parameter} parameter!"
-          exit
+          return
       end
     end
     
     if !prefix["#{params['type']}"] and @debug
       puts "#{prefix['error']} - logger: invalid log type for message: #{params['message']}"
-      exit
+      return
     end
 
     puts "#{prefix["#{params['type']}"]} - #{params['function']}: #{params['message']}"
 
-  end
+  end # loggers
 
 end #class

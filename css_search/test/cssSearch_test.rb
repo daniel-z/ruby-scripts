@@ -13,16 +13,18 @@ class TestCssSearch < Test::Unit::TestCase
 
   # create and prepare the CssParser object
   def setup
-    @params = Hash.new()
-    @params["cssFile"]    = "./resources/example.css"
-    @params["cssPropertyMask"] = 'border-radius'
+    @params = Hash.new
     @params["debug"] = true
     @cssSearchObj = CssSearch.new(@params)
   end
 
   def test_getSelectors
+
+    @params["cssFile"]    = "./resources/example1.css"
+    @params["cssPropertyMask"] = 'border-radius'
+
     # results for the first test
-    results = Array.new() 
+    results = Array.new
     results[0] = "#id-with-property"
     results[1] = ".class-with-property"
     results[2] = "p.element-with-property"
@@ -31,4 +33,26 @@ class TestCssSearch < Test::Unit::TestCase
     assert_equal results, @cssSearchObj.getSelectors(@params), "getSelectors for border-radius test!"
   end
 
+  def test_isValidFile
+    @params["file"] = './resources/example1.css'
+    assert_equal true, @cssSearchObj.isValidFile(@params)
+  end
+
+  def test_getSelectorsInFolder
+    @params["cssPropertyMask"] = 'border-radius'
+    @params["path"] = './resources/'
+  
+    results = Array.new()
+    results[0] = "#id-with-property"
+    results[1] = ".class-with-property"
+    results[2] = "p.element-with-property"
+    results[3] = "span"
+    results[4] = "#id-with-property.example2"
+    results[5] = ".class-with-property.example2"
+    results[6] = "p.element-with-property.example2"
+    results[7] = "span.example2"
+  
+    assert_equal results, @cssSearchObj.getAllSelectorsInFolder(@params), "getSelectors all selectors in folder for border-radius test!"
+  end
+  
 end
